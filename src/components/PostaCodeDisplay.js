@@ -3,7 +3,7 @@ import React from "react";
 export function GeoDataDisplay({ data }) {
   return (
     <div>
-      <h2>Geo Data</h2>
+      <h2>Postal Code Data</h2>
       <p>Postcode: {data.postcode}</p>
       <p>Country: {data.country}</p>
       <p>Longitude: {data.longitude}</p>
