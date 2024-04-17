@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { formatPostalCodeData } from "./formattingOperations";
+import { formatPostalCodeObject } from "./formattingOperations";
 
-const usePostalCodeAPI = (postalCode) => {
+const usePostalCodeAPI = (postalCode, postalCodeHistory) => {
   const [postalCodeData, setPostalCodeData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!postalCode) return;
+    if (!postalCode || postalCodeHistory[postalCode]) return;
 
     setLoading(true);
     setPostalCodeData(null);
@@ -30,7 +30,7 @@ const usePostalCodeAPI = (postalCode) => {
         return response.json();
       })
       .then((response) => {
-        setPostalCodeData(formatPostalCodeData(response));
+        setPostalCodeData(formatPostalCodeObject(response));
       })
       .catch((error) => {
         setLoading(false);

@@ -1,6 +1,6 @@
 import React from "react";
 
-export function PostalCodeHistory({ savedPostalCode }) {
+export function PostalCodeHistory({ postalCodeHistory }) {
   function displayFunction() {
     //display this object
   }
@@ -9,13 +9,20 @@ export function PostalCodeHistory({ savedPostalCode }) {
   }
   return (
     <div>
+      <h1>HISROTY:</h1>
       {/* loop through ach item, display postalcode and delete option */}
-      {savedPostalCode.map((postalCodeObject) => {
-        <div>
-          <div onClick={displayFunction}>{postalCodeObject.postalcode}</div>
-          <div onClick={deleteFunction}>-</div>
-        </div>;
-      })}
+      {postalCodeHistory && (
+        <ul>
+          {Object.keys(postalCodeHistory).map((key) => {
+            return (
+              <ol key={key} className="flex gap-x-4">
+                <div onClick={displayFunction}>{key}</div>
+                <div onClick={deleteFunction}> Del</div>
+              </ol>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

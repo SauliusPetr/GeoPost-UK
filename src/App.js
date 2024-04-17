@@ -5,27 +5,55 @@ import PostalCodeInput from "./components/PostalCodeInput";
 import { DisplayPostalCodeInfo } from "./components/PostalCodeDisplay";
 
 import { usePostalCodeAPI } from "./utils/postalCodeDataFetcher";
+import { formatPostalCode } from "./utils/formattingOperations";
+import { PostalCodeHistory } from "./components/PostalCodeHistory";
 
 function App() {
   const [postalCode, setPostalCode] = useState("");
+  const [postalCodeHistory, setPostalCodeHisotry] = useState({});
 
-  //make an object act as a kind of hash
-  //refrence by formatted postal code
-  // const [postalCodeHistory, setPostalCodeHisotry] = useState({});
+  /*
+    Custom Hook that fetches new postalCodeData based on postalCode.
+    Does not make call if postalCode is in postalCodeHistory
+  */
+  const { loading, postalCodeData, error } = usePostalCodeAPI(
+    postalCode,
+    postalCodeHistory
+  );
 
-  const { loading, postalCodeData, error } = usePostalCodeAPI(postalCode);
-
+  /*
+    Update postalCode, then re-render happens which triggers usePostalCodeAPI to fetch new data
+  */
   function handlePostalCodeSubmit(newPostalCode) {
-    setPostalCode(newPostalCode);
+    const formattedCode = formatPostalCode(newPostalCode);
+    if (postalCodeCached(formattedCode, postalCodeHistory)) {
+      return;
+    }
+    setPostalCode(formattedCode);
+  }
+
+  /*
+    "Listens" on re-renders and updates postalCodeHistory if postCode is new
+  */
+  if (postalCodeData && !postalCodeCached(postalCode, postalCodeHistory)) {
+    setPostalCodeHisotry({
+      ...postalCodeHistory,
+      [postalCode]: postalCodeData,
+    });
   }
 
   return (
-    <div className="App">
-      <PostalCodeInput handleSubmit={handlePostalCodeSubmit} />
+    <div className="App grid grid-cols-2 grid-rows-3 ">
+      <PostalCodeInput handleSubmit={handlePostalCodeSubmit} className="" />
+      <PostalCodeHistory
+        postalCodeHistory={postalCodeHistory}
+        className="row-span-2"
+      />
       <DisplayPostalCodeInfo
         loading={loading}
         error={error}
         data={postalCodeData}
+        className=""
       />
     </div>
   );
@@ -33,4 +61,6 @@ function App() {
 
 export default App;
 
-// function addToHistory(newObject, history, setHistory) {}
+function postalCodeCached(postalCode, postCodeHistory) {
+  return postCodeHistory[postalCode] ? true : false;
+}

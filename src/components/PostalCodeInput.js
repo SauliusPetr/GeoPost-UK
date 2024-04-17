@@ -5,6 +5,10 @@ import { isValidPostalCode } from "../utils/validator";
 export default function PostalCodeInput({ handleSubmit }) {
   const [postalCode, setPostalCode] = useState("");
 
+  /*
+    Checks if submited value is valid.
+    If okay uses callback function to update postalCode state 
+  */
   function handleSubmitButton() {
     if (isValidPostalCode(postalCode)) {
       handleSubmit(postalCode);

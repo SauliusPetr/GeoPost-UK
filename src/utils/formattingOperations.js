@@ -1,4 +1,4 @@
-export function formatPostalCodeData(repsonse) {
+export function formatPostalCodeObject(repsonse) {
   const postalCodeData = repsonse.result;
   const extractedData = {
     postcode: postalCodeData.postcode,
@@ -12,7 +12,5 @@ export function formatPostalCodeData(repsonse) {
 }
 
 export function formatPostalCode(postalCode) {
-  //replace spaces with no space
-  //lowercase
   return postalCode.replace(" ", "").toLowerCase();
 }
