@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { formatPostalCodeData } from "./formattingOperations";
 
 const usePostalCodeAPI = (postalCode) => {
   const [postalCodeData, setPostalCodeData] = useState(null);
@@ -29,7 +30,7 @@ const usePostalCodeAPI = (postalCode) => {
         return response.json();
       })
       .then((response) => {
-        setPostalCodeData(extractPostalCodeData(response));
+        setPostalCodeData(formatPostalCodeData(response));
       })
       .catch((error) => {
         setLoading(false);
@@ -42,18 +43,5 @@ const usePostalCodeAPI = (postalCode) => {
 
   return { postalCodeData, error, loading };
 };
-
-function extractPostalCodeData(repsonse) {
-  const postalCodeData = repsonse.result;
-  const extractedData = {
-    postcode: postalCodeData.postcode,
-    country: postalCodeData.country,
-    longitude: postalCodeData.longitude,
-    latitude: postalCodeData.latitude,
-    adminDistrict: postalCodeData.admin_district,
-  };
-
-  return extractedData;
-}
 
 export { usePostalCodeAPI };
