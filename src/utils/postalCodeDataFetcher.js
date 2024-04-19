@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react";
 import { formatPostalCodeObject } from "./formattingOperations";
 
-const usePostalCodeAPI = (postalCode, postalCodeHistory) => {
+/*
+    Custom Hook that fetches new postalCodeData based on provided postalCode.
+    If the postalCode is present in postalCodeCache it will return the object instead .
+*/
+
+const usePostalCodeAPI = (postalCode, postalCodeCache) => {
   const [postalCodeData, setPostalCodeData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!postalCode || postalCodeHistory[postalCode]) return;
-
-    setLoading(true);
     setPostalCodeData(null);
     setError(null);
+
+    if (!postalCode) return;
+    if (postalCode && postalCodeCache[postalCode]) {
+      setPostalCodeData(postalCodeCache[postalCode]);
+      return;
+    }
+
+    setLoading(true);
 
     fetch(`https://api.postcodes.io/postcodes/${postalCode}`)
       .then((response) => {

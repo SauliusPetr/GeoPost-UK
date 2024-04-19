@@ -8,7 +8,7 @@ export function DisplayPostalCodeInfo({ loading, error, data }) {
       {data && (
         <div>
           <h2>Postal Code Data</h2>
-          <p>Postcode: {data.postcode}</p>
+          <p>Postcode: {data.postCode}</p>
           <p>Country: {data.country}</p>
           <p>Longitude: {data.longitude}</p>
           <p>Latitude: {data.latitude}</p>

@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import PostalCodeInput from "./components/PostalCodeInput";
 import { DisplayPostalCodeInfo } from "./components/PostalCodeDisplay";
@@ -10,44 +10,71 @@ import { PostalCodeHistory } from "./components/PostalCodeHistory";
 
 function App() {
   const [postalCode, setPostalCode] = useState("");
-  const [postalCodeHistory, setPostalCodeHisotry] = useState({});
+  const [postalCodeCache, setPostalCodeCache] = useState({});
 
-  /*
-    Custom Hook that fetches new postalCodeData based on postalCode.
-    Does not make call if postalCode is in postalCodeHistory
-  */
   const { loading, postalCodeData, error } = usePostalCodeAPI(
     postalCode,
-    postalCodeHistory
+    postalCodeCache
   );
 
   /*
-    Update postalCode, then re-render happens which triggers usePostalCodeAPI to fetch new data
+    Add postalCode to postalCodeCache if not present.
+    Rerender only when postalCodeData changes.
   */
-  function handlePostalCodeSubmit(newPostalCode) {
-    const formattedCode = formatPostalCode(newPostalCode);
-    if (postalCodeCached(formattedCode, postalCodeHistory)) {
+  useEffect(() => {
+    if (
+      postalCodeData &&
+      postalCode &&
+      !isPostalCodeCached(postalCode, postalCodeCache)
+    ) {
+      addPostalCodeToCache(postalCode, postalCodeData);
+    }
+  }, [postalCodeData]);
+
+  function handleDelete(postalCodeToDelete) {
+    const newPostalCodeCache = { ...postalCodeCache };
+    delete newPostalCodeCache[postalCodeToDelete];
+    setPostalCodeCache(newPostalCodeCache);
+
+    /* 
+      Reset postalCode so that postalCode, the current displayed code,
+      is not fetched by usePostalCodeAPI
+    */
+    if (postalCodeToDelete === postalCode) {
+      setPostalCode("");
+    }
+  }
+
+  /*
+    Fetch new data if not in added in postalCodeCache.
+  */
+  function handleSubmit(postalCodeToSubmit) {
+    const formattedCode = formatPostalCode(postalCodeToSubmit);
+    if (isPostalCodeCached(formattedCode, postalCodeCache)) {
       return;
     }
     setPostalCode(formattedCode);
   }
 
-  /*
-    "Listens" on re-renders and updates postalCodeHistory if postCode is new
-  */
-  if (postalCodeData && !postalCodeCached(postalCode, postalCodeHistory)) {
-    setPostalCodeHisotry({
-      ...postalCodeHistory,
-      [postalCode]: postalCodeData,
-    });
+  function handleDisplay(postalCode) {
+    setPostalCode(postalCode);
   }
+
+  const addPostalCodeToCache = (postalCodeToAdd, postalCodeData) => {
+    setPostalCodeCache({
+      ...postalCodeCache,
+      [formatPostalCode(postalCodeToAdd)]: postalCodeData,
+    });
+  };
 
   return (
     <div className="App grid grid-cols-2 grid-rows-3 ">
-      <PostalCodeInput handleSubmit={handlePostalCodeSubmit} className="" />
+      <PostalCodeInput handleSubmit={handleSubmit} className="" />
       <PostalCodeHistory
-        postalCodeHistory={postalCodeHistory}
+        postalCodeCache={postalCodeCache}
         className="row-span-2"
+        onDelete={handleDelete}
+        onDisplay={handleDisplay}
       />
       <DisplayPostalCodeInfo
         loading={loading}
@@ -61,6 +88,6 @@ function App() {
 
 export default App;
 
-function postalCodeCached(postalCode, postCodeHistory) {
+function isPostalCodeCached(postalCode, postCodeHistory) {
   return postCodeHistory[postalCode] ? true : false;
 }

@@ -1,23 +1,24 @@
 import React from "react";
 
-export function PostalCodeHistory({ postalCodeHistory }) {
-  function displayFunction() {
-    //display this object
+export function PostalCodeHistory({ postalCodeCache, onDelete, onDisplay }) {
+  function handleDisplay(postalCode) {
+    onDisplay(postalCode);
   }
-  function deleteFunction() {
-    //delete this object
+  function handleDeleteFunction(postalCode) {
+    onDelete(postalCode);
   }
   return (
     <div>
       <h1>HISROTY:</h1>
-      {/* loop through ach item, display postalcode and delete option */}
-      {postalCodeHistory && (
+      {postalCodeCache && (
         <ul>
-          {Object.keys(postalCodeHistory).map((key) => {
+          {Object.keys(postalCodeCache).map((key) => {
             return (
               <ol key={key} className="flex gap-x-4">
-                <div onClick={displayFunction}>{key}</div>
-                <div onClick={deleteFunction}> Del</div>
+                <div onClick={() => handleDisplay(key)}>
+                  {postalCodeCache[key].postCode}
+                </div>
+                <div onClick={() => handleDeleteFunction(key)}> Del</div>
               </ol>
             );
           })}

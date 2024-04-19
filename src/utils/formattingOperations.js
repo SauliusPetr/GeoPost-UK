@@ -1,7 +1,7 @@
 export function formatPostalCodeObject(repsonse) {
   const postalCodeData = repsonse.result;
   const extractedData = {
-    postcode: postalCodeData.postcode,
+    postCode: postalCodeData.postcode,
     country: postalCodeData.country,
     longitude: postalCodeData.longitude,
     latitude: postalCodeData.latitude,

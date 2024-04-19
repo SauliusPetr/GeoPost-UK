@@ -6,8 +6,7 @@ export default function PostalCodeInput({ handleSubmit }) {
   const [postalCode, setPostalCode] = useState("");
 
   /*
-    Checks if submited value is valid.
-    If okay uses callback function to update postalCode state 
+    Use callback function to submit if postalCode is in good format
   */
   function handleSubmitButton() {
     if (isValidPostalCode(postalCode)) {
