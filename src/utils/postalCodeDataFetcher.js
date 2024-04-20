@@ -44,7 +44,7 @@ const usePostalCodeAPI = (postalCode, postalCodeCache) => {
       })
       .catch((error) => {
         setLoading(false);
-        setError(error.message);
+        setError(error);
       })
       .finally(() => {
         setLoading(false);

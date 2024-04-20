@@ -7,6 +7,7 @@ import { DisplayPostalCodeInfo } from "./components/PostalCodeDisplay";
 import { usePostalCodeAPI } from "./utils/postalCodeDataFetcher";
 import { formatPostalCode } from "./utils/formattingOperations";
 import { PostalCodeHistory } from "./components/PostalCodeHistory";
+import Card from "./components/Card";
 
 function App() {
   const [postalCode, setPostalCode] = useState("");
@@ -68,20 +69,28 @@ function App() {
   };
 
   return (
-    <div className="App grid grid-cols-2 grid-rows-3 ">
-      <PostalCodeInput handleSubmit={handleSubmit} className="" />
-      <PostalCodeHistory
-        postalCodeCache={postalCodeCache}
-        className="row-span-2"
-        onDelete={handleDelete}
-        onDisplay={handleDisplay}
-      />
-      <DisplayPostalCodeInfo
-        loading={loading}
-        error={error}
-        data={postalCodeData}
-        className=""
-      />
+    <div className="App  min-h-screen bg-amber-50 flex justify-center items-center p-6">
+      <div className="flex gap-4 max-md:flex-col">
+        <div className="flex flex-col gap-4 items-stretch">
+          <Card className="flex justify-center items-center min-h-32 ">
+            <PostalCodeInput handleSubmit={handleSubmit} />
+          </Card>
+          <Card>
+            <PostalCodeHistory
+              postalCodeCache={postalCodeCache}
+              onDelete={handleDelete}
+              onDisplay={handleDisplay}
+            />
+          </Card>
+        </div>
+        <Card className="flex min-w-96 max-h-96">
+          <DisplayPostalCodeInfo
+            loading={loading}
+            error={error}
+            data={postalCodeData}
+          />
+        </Card>
+      </div>
     </div>
   );
 }
